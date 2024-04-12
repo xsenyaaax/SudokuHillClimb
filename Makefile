@@ -1,7 +1,7 @@
 CXX=g++
 LD=g++
 AR=ar
-CXXFLAGS=-std=c++20 -Wall -pedantic -g
+CXXFLAGS=-std=c++20 -Wall -pedantic -O2 -g
 
 OBJS = main.o SudokuBoard.o NeighborGenerator.o RandPosFill.o HillClimb.o SwapTwoRandom.o BestPosFill.o
 TARGET = sudoku

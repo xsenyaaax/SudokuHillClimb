@@ -9,6 +9,7 @@
 #include <math.h>
 #include <random>
 #include <iostream>
+#include <queue>
 
 int HillClimb::calculateScore(const SudokuBoard &state) const{
     int score = 0;
@@ -52,6 +53,10 @@ int HillClimb::calculateScore(const SudokuBoard &state) const{
     return score;
 }
 
+bool operator<(const std::pair<int, SudokuBoard>& lhs, const std::pair<int, SudokuBoard>& rhs) {
+    return lhs.first > rhs.first;
+}
+
 bool HillClimb::climb() {
     SudokuBoard currentState = board;
     generateStartingState(currentState);
@@ -60,6 +65,7 @@ bool HillClimb::climb() {
     std::cout<< "Generating random solution, Starting score: " << currentScore << std::endl;
     int iterations = 0;
     const int maxIterations = 10000;
+    std::priority_queue<std::pair<int, SudokuBoard>> bestNeighbors;
 
     while (true){
         SudokuBoard neighbor = currentState;
@@ -74,18 +80,19 @@ bool HillClimb::climb() {
         }
 
         if (neighborScore < currentScore){
-            std::cout<<"New best score: " << neighborScore << std::endl;
+           // std::cout<<"New best score: " << neighborScore << std::endl;
             currentState  = neighbor;
             currentScore = neighborScore;
+            bestNeighbors.emplace(neighborScore, neighbor);
         }else {
             iterations++;
             if (iterations >= maxIterations) {
-                // Restart the algorithm
+                // If no best neighbors are available, restart from the beginning
                 currentState = board;
                 generateStartingState(currentState);
                 currentScore = calculateScore(currentState);
                 iterations = 0;
-                std::cout << "Restarting..." << ", score: " << currentScore << std::endl;
+                std::cout << "Restarting from the beginning..." << ", score: " << currentScore << std::endl;
             }
         }
     }

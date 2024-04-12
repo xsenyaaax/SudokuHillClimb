@@ -49,7 +49,7 @@ int main(int argc, char* argv[]){
             {0, 0, 0, 0, 8, 0, 0, 7, 9}
     };
 
-    std::vector<std::vector<int>> sudoku3x3_wiki_full {
+    std::vector<std::vector<int>> sudoku3x3_wiki_solved {
             {5, 3, 4, 6, 7, 8, 9, 1, 2},
             {6, 7, 2, 1, 9, 5, 3, 4, 8},
             {1, 9, 8, 3, 4, 2, 5, 6, 7},
@@ -148,7 +148,7 @@ int main(int argc, char* argv[]){
     };
 
 
-    SudokuBoard sudokuBoard(sudoku4x4_5);
+    SudokuBoard sudokuBoard(sudoku3x3_wiki_35);
     std::cout << sudokuBoard << std::endl;
     auto hillclimb = HillClimb(sudokuBoard, num);
     hillclimb.climb();
