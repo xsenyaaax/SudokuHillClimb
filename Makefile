@@ -3,7 +3,7 @@ LD=g++
 AR=ar
 CXXFLAGS=-std=c++20 -Wall -pedantic -g
 
-OBJS = main.o
+OBJS = main.o SudokuBoard.o NeighborGenerator.o RandPosFill.o HillClimb.o
 TARGET = sudoku
 
 all: $(TARGET)
@@ -18,3 +18,9 @@ clean:
 	rm -f *.o $(TARGET) *~ core  Makefile.d
 
 -include Makefile.d
+
+main.o: main.cpp HillClimb.hpp SudokuBoard.hpp NeighborGenerator.hpp
+NeighborGenerator.o: NeighborGenerator.cpp NeighborGenerator.hpp SudokuBoard.hpp
+RandPosFill.o: RandPosFill.cpp RandPosFill.hpp NeighborGenerator.hpp SudokuBoard.hpp
+SudokuBoard.o: SudokuBoard.cpp SudokuBoard.hpp
+
