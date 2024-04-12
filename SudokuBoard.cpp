@@ -35,7 +35,7 @@ std::ostream &operator<<(std::ostream &os, const SudokuBoard &sudoku) {
                 os << "|";
             }
 
-            os << sudoku.board[i][j] << " ";
+            os << std::setw(2) << std::setfill('0') <<  sudoku.board[i][j] << " ";
         }
         os << std::endl;
 

@@ -4,6 +4,8 @@
 #include "SudokuBoard.hpp"
 #include "HillClimb.hpp"
 #include "RandPosFill.hpp"
+#include "SwapTwoRandom.hpp"
+#include "BestPosFill.hpp"
 #include <math.h>
 #include <random>
 #include <iostream>
@@ -17,13 +19,13 @@ int HillClimb::calculateScore(const SudokuBoard &state) const{
         std::vector<bool> colCheck(boardSize + 1, false);
 
         for (size_t j = 0; j < boardSize; ++j) {
-            // Check conflicts in rows
+            // rows
             if (state.board[i][j] != 0 && rowCheck[state.board[i][j]]) {
                 score++;
             }
             rowCheck[state.board[i][j]] = true;
 
-            // Check conflicts in columns
+            // columns
             if (state.board[j][i] != 0 && colCheck[state.board[j][i]]) {
                 score++;
             }
@@ -34,12 +36,10 @@ int HillClimb::calculateScore(const SudokuBoard &state) const{
     int subgridSize = std::sqrt(boardSize);
     for (size_t i = 0; i < boardSize; i += subgridSize) {
         for (size_t j = 0; j < boardSize; j += subgridSize) {
-            // Array to track occurrences of numbers in subgrid
-            std::vector<bool> subgridCheck(boardSize + 1, false); // index 0 is not used
+            std::vector<bool> subgridCheck(boardSize + 1, false);
 
             for (size_t k = i; k < i + subgridSize; ++k) {
                 for (size_t l = j; l < j + subgridSize; ++l) {
-                    // Check conflicts in subgrid
                     if (state.board[k][l] != 0 && subgridCheck[state.board[k][l]]) {
                         score++;
                     }
@@ -77,18 +77,17 @@ bool HillClimb::climb() {
             std::cout<<"New best score: " << neighborScore << std::endl;
             currentState  = neighbor;
             currentScore = neighborScore;
+        }else {
+            iterations++;
+            if (iterations >= maxIterations) {
+                // Restart the algorithm
+                currentState = board;
+                generateStartingState(currentState);
+                currentScore = calculateScore(currentState);
+                iterations = 0;
+                std::cout << "Restarting..." << ", score: " << currentScore << std::endl;
+            }
         }
-
-        iterations++;
-        if (iterations >= maxIterations) {
-            // Restart the algorithm
-            currentState = board;
-            generateStartingState(currentState);
-            currentScore = calculateScore(currentState);
-            iterations = 0;
-            std::cout << "Restarting..." << ", score: " << currentScore << std::endl;
-        }
-
     }
 }
 
@@ -107,6 +106,20 @@ void HillClimb::generateStartingState(SudokuBoard & sudokuBoard) {
     }
 }
 
-HillClimb::HillClimb(SudokuBoard &sudokuBoard) : board(sudokuBoard), neighborGenerator(std::make_unique<RandPosFill>()){}
+HillClimb::HillClimb(SudokuBoard &sudokuBoard, int neighborGenChoice) : board(sudokuBoard){
+    switch(neighborGenChoice){
+        case 0:
+            neighborGenerator = std::make_unique<RandPosFill>();
+            break;
+        case 1:
+            neighborGenerator = std::make_unique<BestPosFill>();
+            break;
+        case 2:
+            neighborGenerator = std::make_unique<SwapTwoRandom>();
+            break;
+        default:
+            throw std::invalid_argument("Wrong input");
+    }
+}
 
 

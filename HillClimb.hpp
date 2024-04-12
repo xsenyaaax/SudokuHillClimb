@@ -13,7 +13,7 @@ private:
     SudokuBoard board;
     std::unique_ptr<NeighborGenerator> neighborGenerator;
 public:
-    HillClimb(SudokuBoard & sudokuBoard);
+    HillClimb(SudokuBoard & sudokuBoard, int neighborGenChoice);
 
     void generateStartingState(SudokuBoard & sudokuBoard);
     int calculateScore(const SudokuBoard & state) const;
