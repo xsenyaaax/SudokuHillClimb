@@ -2,7 +2,9 @@
 // Created by senyaaa on 4/12/2024.
 //
 #include "RandPosFill.hpp"
-
+/*
+ * Pick random cell from cells to fill and generates random number in it
+ */
 void RandPosFill::generatorNeighbor(SudokuBoard &state) const {
     size_t boardSize = state.getBoardSize();
     std::random_device rd;

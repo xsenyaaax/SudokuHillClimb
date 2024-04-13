@@ -1,16 +1,12 @@
 //
 // Created by senyaaa on 4/12/2024.
 //
-#include "SudokuBoard.hpp"
 #include "HillClimb.hpp"
-#include "RandPosFill.hpp"
-#include "SwapTwoRandom.hpp"
-#include "BestPosFill.hpp"
-#include <math.h>
-#include <random>
-#include <iostream>
-#include <queue>
 
+/**
+ * @param state filled sudoku board
+ * @return number of collision in this state
+ */
 int HillClimb::calculateScore(const SudokuBoard &state) const{
     int score = 0;
     size_t boardSize = state.board.size();
@@ -34,6 +30,7 @@ int HillClimb::calculateScore(const SudokuBoard &state) const{
         }
     }
 
+    // check subgrids
     int subgridSize = std::sqrt(boardSize);
     for (size_t i = 0; i < boardSize; i += subgridSize) {
         for (size_t j = 0; j < boardSize; j += subgridSize) {
@@ -57,15 +54,18 @@ bool operator<(const std::pair<int, SudokuBoard>& lhs, const std::pair<int, Sudo
     return lhs.first > rhs.first;
 }
 
+/**
+ * Initiliazes games with some random solution in the beginning, then iterates through neighbors, calculates score and restarts if neccesary
+ * @return return true, idk why, function could be void
+ */
 bool HillClimb::climb() {
     SudokuBoard currentState = board;
     generateStartingState(currentState);
     int currentScore = calculateScore(currentState);
 
-    std::cout<< "Generating random solution, Starting score: " << currentScore << std::endl;
+    int numberOfRestarts = 0;
     int iterations = 0;
     const int maxIterations = 10000;
-    std::priority_queue<std::pair<int, SudokuBoard>> bestNeighbors;
 
     while (true){
         SudokuBoard neighbor = currentState;
@@ -74,30 +74,29 @@ bool HillClimb::climb() {
         int neighborScore = calculateScore(neighbor);
 
         if (neighborScore == 0){
-            std::cout<< "Final solution: " << std::endl;
-            std::cout << neighbor << std::endl;
+            std::cout<< "Solved: "<< numberOfRestarts << " restarts" << std::endl;
             return true;
         }
 
         if (neighborScore < currentScore){
-           // std::cout<<"New best score: " << neighborScore << std::endl;
             currentState  = neighbor;
             currentScore = neighborScore;
-            bestNeighbors.emplace(neighborScore, neighbor);
         }else {
             iterations++;
             if (iterations >= maxIterations) {
-                // If no best neighbors are available, restart from the beginning
                 currentState = board;
                 generateStartingState(currentState);
                 currentScore = calculateScore(currentState);
+                numberOfRestarts++;
                 iterations = 0;
-                std::cout << "Restarting from the beginning..." << ", score: " << currentScore << std::endl;
             }
         }
     }
 }
-
+/**
+ * Generates random starting game state, does not take into account same numbers in row/columns
+ * @param sudokuBoard
+ */
 void HillClimb::generateStartingState(SudokuBoard & sudokuBoard) {
     size_t boardSize = board.getBoardSize();
     std::random_device rd;
@@ -112,7 +111,9 @@ void HillClimb::generateStartingState(SudokuBoard & sudokuBoard) {
         }
     }
 }
-
+/*
+ * Constructor. NeighborGenerator is using polymorphism so it could be easily called by one function.
+ */
 HillClimb::HillClimb(SudokuBoard &sudokuBoard, int neighborGenChoice) : board(sudokuBoard){
     switch(neighborGenChoice){
         case 0:

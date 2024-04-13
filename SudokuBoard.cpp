@@ -3,19 +3,17 @@
 //
 
 #include "SudokuBoard.hpp"
-#include <math.h>
 
 SudokuBoard::SudokuBoard(size_t subgridSize) : subgridSize(subgridSize) {
     size_t boardSize = subgridSize * subgridSize;
     board.resize(boardSize, std::vector<int>(boardSize,0));
 }
 
-SudokuBoard::SudokuBoard(std::vector<std::vector<int>> tmp) : board(std::move(tmp)) {
+SudokuBoard::SudokuBoard(const std::vector<std::vector<int>> & tmp) : board(tmp) {
     subgridSize = board.size() ;
     for (size_t i = 0; i < board.size(); i ++){
         for (size_t j = 0; j < board[i].size(); j++ ){
-            if (board[i][j] != 0) givenNumbers.insert({i,j});
-            else toFill.emplace_back(i,j);
+            if (board[i][j] == 0) toFill.emplace_back(i,j);
         }
     }
 }
@@ -47,17 +45,10 @@ void SudokuBoard::setValue(size_t row, size_t col, int val) {
     board[row][col] = val;
 }
 
-size_t SudokuBoard::getSubgridsize() const{
-    return subgridSize;
-}
-
 size_t SudokuBoard::getBoardSize() const{
     return board.size();
 }
 
-bool SudokuBoard::isGiven(size_t row, size_t col) const {
-    return givenNumbers.count({row, col}) == 1;
-}
 
 
 

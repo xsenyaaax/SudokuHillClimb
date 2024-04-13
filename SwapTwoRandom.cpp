@@ -2,9 +2,11 @@
 // Created by senyaaa on 4/12/2024.
 //
 
-#include <random>
 #include "SwapTwoRandom.hpp"
 
+/**
+ * Just swaps two random cells, not good tactic, relies on correct starting state
+ */
 void SwapTwoRandom::generatorNeighbor(SudokuBoard &state) const {
     std::random_device rd;
     std::mt19937 gen(rd());

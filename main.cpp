@@ -4,13 +4,38 @@
 #include <iostream>
 #include "HillClimb.hpp"
 #include "SudokuBoard.hpp"
+#include <chrono>
+
+/**
+ * Some basic tests to check time
+ */
+double runHillClimb(const std::vector<std::vector<int>>& sudoku, int strategy) {
+    SudokuBoard sudokuBoard(sudoku);
+    auto startTime = std::chrono::high_resolution_clock::now();
+    HillClimb hillclimb(sudokuBoard, strategy);
+    hillclimb.climb();
+    auto endTime = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = endTime - startTime;
+    return duration.count();
+}
+
+void testSudokuBoards(const std::vector<std::vector<int>>& sudoku, int numTests, int missing) {
+    double totalTime[3] = {0};
+    for (int strategy = 0; strategy < 2; ++strategy) {
+        switch(strategy){
+            case 0: std::cout << "RandPosFill, missing values:" << missing << std::endl; break;
+            case 1: std::cout << "BestPosFill, missing values:" << missing << std::endl; break;
+            case 2: std::cout << "SwapTwoRandom, missing values:" << missing << std::endl; break;
+        }
+        for (int i = 0; i < numTests; ++i) {
+            totalTime[strategy] += runHillClimb(sudoku, strategy);
+        }
+        double averageTime = totalTime[strategy] / numTests;
+        std::cout << "Average time for strategy " << strategy << ": " << averageTime << " seconds" << std::endl;
+    }
+}
 
 int main(int argc, char* argv[]){
-    if (argc != 2) {
-        std::cerr << "Usage: " << argv[0] << " <number>" << std::endl;
-        return 1;
-    }
-    int num = std::atoi(argv[1]);
 
     std::vector<std::vector<int>> sudoku2x2= {
             {1, 2, 3, 0},
@@ -61,7 +86,19 @@ int main(int argc, char* argv[]){
             {3, 4, 5, 2, 8, 6, 1, 7, 9}
     };
 
-    std::vector<std::vector<int>> sudoku3x3_wiki_10 {
+    std::vector<std::vector<int>> sudoku3x3_wiki_5 {
+            {5, 3, 0, 6, 7, 8, 9, 0, 2},
+            {6, 7, 2, 1, 9, 5, 3, 4, 8},
+            {1, 9, 8, 3, 4, 2,0, 6, 7},
+            {8, 5, 9, 7, 6, 1, 4, 2, 3},
+            {4, 2, 6,0, 5, 3, 7, 9, 1},
+            {7, 1, 3, 9, 2, 4, 8, 5, 6},
+            {9, 6, 1, 5, 3, 7, 2, 8, 4},
+            {0, 8, 7, 4, 1, 9, 6, 3, 5},
+            {3, 4, 5, 2, 8, 6, 1, 7, 9}
+    };
+
+    const std::vector<std::vector<int>> sudoku3x3_wiki_10 {
             {0, 3, 4, 6, 7, 8, 9, 1, 2},
             {6, 7, 2, 0, 9, 5, 3, 0, 8},
             {1, 9, 8, 3, 4, 2, 5, 6, 0},
@@ -73,7 +110,7 @@ int main(int argc, char* argv[]){
             {3, 4, 5, 2, 8, 6, 1, 0, 9}
     };
 
-    std::vector<std::vector<int>> sudoku3x3_wiki_15 {
+    const std::vector<std::vector<int>> sudoku3x3_wiki_15 {
             {0, 3, 4, 0, 7, 8, 9, 1, 2},
             {6, 7, 2, 0, 9, 5, 3, 0, 8},
             {1, 9, 8, 3, 4, 2, 5, 6, 0},
@@ -85,7 +122,7 @@ int main(int argc, char* argv[]){
             {0, 4, 5, 2, 8, 6, 1, 0, 9}
     };
 
-    std::vector<std::vector<int>> sudoku3x3_wiki_25 {
+    const std::vector<std::vector<int>> sudoku3x3_wiki_25 {
             {0, 3, 4, 0, 0, 8, 9, 1, 0},
             {6, 7, 2, 0, 9, 5, 3, 0, 8},
             {1, 9, 8, 0, 0, 2, 0, 6, 0},
@@ -97,7 +134,7 @@ int main(int argc, char* argv[]){
             {0, 4, 0, 2, 8, 6, 1, 0, 9}
     };
 
-    std::vector<std::vector<int>> sudoku3x3_wiki_35 {
+    const std::vector<std::vector<int>> sudoku3x3_wiki_35 {
             {0, 3, 4, 0, 0, 8, 9, 0, 0},
             {6, 0, 2, 0, 9, 5, 0, 0, 8},
             {1, 0, 8, 0, 0, 0, 0, 6, 0},
@@ -109,7 +146,19 @@ int main(int argc, char* argv[]){
             {0, 4, 0, 0, 8, 6, 1, 0, 9}
     };
 
-    std::vector<std::vector<int>> sudoku4x4_solved = {
+    const std::vector<std::vector<int>> sudoku3x3_wiki_40 {
+            {0, 3, 4, 0, 0, 8, 0, 0, 0},
+            {6, 0, 2, 0, 9, 5, 0, 0, 8},
+            {1, 0, 8, 0, 0, 0, 0, 6, 0},
+            {8, 0, 9, 0, 6, 1, 4, 0, 3},
+            {0, 0, 6, 0, 0, 3, 7, 0, 1},
+            {7, 0, 3, 9, 2, 4, 0, 5, 0},
+            {0, 0, 1, 0, 3, 7, 2, 0, 4},
+            {2, 0, 0, 4, 0, 9, 0, 3, 5},
+            {0, 4, 0, 0, 8, 0, 1, 0, 9}
+    };
+
+    const std::vector<std::vector<int>> sudoku4x4_solved = {
             {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
             {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1, 2, 3, 4},
             {9, 10, 11, 12, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8},
@@ -128,28 +177,70 @@ int main(int argc, char* argv[]){
             {16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}
     };
 
-    std::vector<std::vector<int>> sudoku4x4_5 = {
-            {0, 2, 3, 4, 5, 6, 7, 8, 9, 0, 11, 12, 13, 14, 15, 0},
+    const std::vector<std::vector<int>> sudoku4x4_15 = {
+            {0, 2, 3, 4, 5, 6, 7, 8, 9, 0, 11, 0, 13,0, 15, 0},
             {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1, 2, 3, 4},
-            {9, 10, 11, 0, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8},
-            {13, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12},
-            {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1},
+            {9, 0, 11, 0, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8},
+            {13, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 11, 12},
+            {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 13, 14, 15, 0, 1},
             {6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1, 2, 3, 4, 5},
-            {10, 11, 12, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 9},
-            {14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13},
+            {10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5, 6, 7, 0, 9},
+            {14, 15, 16, 1, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13},
             {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1, 2},
-            {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6},
+            {7, 8, 9, 0, 11, 12, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6},
             {11, 12, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
-            {15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
+            {15, 16, 1, 2, 3, 4, 5, 6, 7, 0, 9, 10, 11, 12, 13, 14},
             {4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1, 2, 3},
-            {8, 9, 10, 11, 12, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7},
+            {8, 0, 10, 11, 0, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7},
             {12, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11},
-            {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0}
+            {0, 1, 2, 3, 4, 5, 6, 0, 8, 9, 10, 0, 12, 13, 14, 0}
     };
 
 
-    SudokuBoard sudokuBoard(sudoku3x3_wiki_35);
-    std::cout << sudokuBoard << std::endl;
-    auto hillclimb = HillClimb(sudokuBoard, num);
-    hillclimb.climb();
+    const std::vector<std::vector<int>> sudoku4x4_30 = {
+            {0, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 13,0, 15, 0},
+            {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1, 2, 3, 4},
+            {9, 0, 11, 0, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8},
+            {13, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 11, 12},
+            {0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 13, 14, 15, 0, 1},
+            {6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1, 2, 3, 4, 5},
+            {10, 11, 12, 13, 14, 0, 0, 1, 2, 3, 4, 5, 6, 7, 0, 9},
+            {14, 0, 16, 1, 0, 3, 4, 5, 6, 7, 0, 9, 10, 11, 12, 13},
+            {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0, 1, 2},
+            {7, 8, 9, 0, 0, 12, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6},
+            {0, 12, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 0, 10},
+            {15, 16, 1, 2, 3, 4, 5, 6, 7, 0, 9, 10, 11, 0, 13, 14},
+            {4, 0, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1, 0, 3},
+            {8, 0, 10, 11, 0, 13, 14, 0, 16, 1, 2, 3, 4, 5, 6, 7},
+            {12,0, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 0, 10, 11},
+            {0, 1, 2, 3, 4, 5, 6, 0, 8, 9, 10, 0, 12, 13, 14, 0}
+    };
+
+    const std::vector<std::vector<int>> sudoku4x4_45 = {
+            {0, 2, 3, 4, 0, 6, 7, 8, 9, 0, 0, 0, 13,0, 15, 0},
+            {5, 6, 0, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1, 0, 3, 4},
+            {9, 0, 11, 0, 13, 14, 15, 16, 1, 2, 3, 0, 5, 6, 7, 8},
+            {13, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 11, 12},
+            {0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 13, 14, 15, 0, 1},
+            {6, 7, 0, 9, 10, 11, 12, 0, 0, 15, 16, 0, 2, 3, 4, 5},
+            {10, 11, 12, 13, 14, 0, 0, 1, 2, 3, 4, 5, 6, 7, 0, 9},
+            {14, 0, 16, 0, 0, 3, 4, 5, 6, 7, 0, 9, 10, 11, 12, 13},
+            {3, 0, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 0, 1, 2},
+            {7, 8, 9, 0, 0, 12, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6},
+            {0, 12, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 0, 10},
+            {15, 16, 1, 2, 3, 4, 5, 6, 7, 0, 9, 10, 11, 0, 13, 14},
+            {4, 0, 0, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1, 0, 3},
+            {8, 0, 10, 0, 0, 13, 14, 0, 16, 1, 2, 3, 4, 5, 6, 7},
+            {12,0, 14, 15, 16, 0, 2, 3, 4, 5, 6, 7, 8, 0, 10, 11},
+            {0, 1, 2, 0, 4, 5, 6, 0, 8, 9, 10, 0, 12, 13, 14, 0}
+    };
+
+    const int numTests = 5;
+   testSudokuBoards(sudoku3x3_wiki_25, numTests, 25);
+    testSudokuBoards(sudoku3x3_wiki_35, numTests, 35);
+    testSudokuBoards(sudoku3x3_wiki_40, 3, 40);
+    testSudokuBoards(sudoku4x4_15, 5, 15);
+    testSudokuBoards(sudoku4x4_30, 5, 30);
+    testSudokuBoards(sudoku4x4_45, 5, 45);
+    return 0;
 }

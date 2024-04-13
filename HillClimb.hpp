@@ -4,6 +4,14 @@
 #pragma once
 #include "SudokuBoard.hpp"
 #include "NeighborGenerator.hpp"
+#include <math.h>
+#include <random>
+#include <iostream>
+#include <queue>
+#include "RandPosFill.hpp"
+#include "SwapTwoRandom.hpp"
+#include "BestPosFill.hpp"
+#include "SudokuBoard.hpp"
 #ifndef BI_ZUM_2024_POGODARS_HILLCLIMB_HPP
 #define BI_ZUM_2024_POGODARS_HILLCLIMB_HPP
 

@@ -1,10 +1,11 @@
 //
 // Created by senyaaa on 4/12/2024.
 //
-
-#include <random>
 #include "BestPosFill.hpp"
 
+/*
+ * Pick random cell from cells to fill and searches for best numbers to fit there depending on number of collisions.
+ */
 void BestPosFill::generatorNeighbor(SudokuBoard &state) const {
     size_t boardSize = state.getBoardSize();
     std::random_device rd;

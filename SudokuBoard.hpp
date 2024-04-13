@@ -3,25 +3,25 @@
 //
 #include <vector>
 #include <iomanip>
-#include <set>
+#include <math.h>
 
 #ifndef BI_ZUM_2024_POGODARS_SUDOKUBOARD_HPP
 #define BI_ZUM_2024_POGODARS_SUDOKUBOARD_HPP
 
-
+/**
+ * Class that represents Sudokuboard, kinda intuitive
+ */
 class SudokuBoard {
 public:
     std::vector<std::vector<int>> board;
-    std::set< std::pair<int,int> > givenNumbers;
-    size_t subgridSize;
-    std::vector< std::pair<int,int> > toFill;
+    size_t subgridSize; // number of squares in 1 subgrid
+    std::vector< std::pair<int,int> > toFill; // cells that are need to be filled, used in neighbor generators
 
     SudokuBoard(size_t subgridSize);
-    SudokuBoard(std::vector<std::vector<int>> tmp); // NOLINT(*-explicit-constructor)
+    SudokuBoard(const std::vector<std::vector<int>> & tmp); // NOLINT(*-explicit-constructor)
 
     void setValue(size_t row, size_t col, int val);
     bool isGiven(size_t row, size_t col) const;
-    size_t getSubgridsize() const;
     size_t getBoardSize() const;
     friend std::ostream& operator<<(std::ostream &os, const SudokuBoard & sudoku);
 };
