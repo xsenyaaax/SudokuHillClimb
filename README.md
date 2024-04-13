@@ -1,13 +1,14 @@
-# Sudokář - klikař
-Projekt byl vytvořen jako semestrální práce v předmětu BI-ZUM
+The program utilized polymorphism for the sake of clarity within the Hill Climbing algorithm, where the virtual method generateNeighbor() was invoked. If you want to add additional custom classes for generating neighbors, you can easily do so by adding a new class that inherits from NeighborGenerator and making a simple adjustment to the constructor of HillClimb.
 
-## BI-ZUM
-[CZ] Předmět podává základní úvod ke studiu umělé inteligence s důrazem na symbolické techniky. Probírány budou klasické oblasti jako je prohledávání stavového prostoru, heuristické prohledávání, agentní systémy, rozhodování ve hrách, automatické plánování, robotika a modelování úloh
+To run the program:
+```
+make
+./sudoku
+```
 
-### Zadání
-Formulujte SUDOKU ja úlohu lokálního prohledávání, čili ve smyslu algoritmu stoupání do kopce.
-Vzykoušejte různé varianty, jak lokálně měnit kandidáta na řešení a porovnejte je.
-Pole velikosti 9x9 je pro dnešní počítače hračka (samozřejmě, jak kdy), proto vyzkoušejte zobecněné SUDOKU na větší hrací ploše.
+# The "Sudoku Solver" 
+project was created as a semester assignment for the course BI-ZUM
+
 
 ## BI-ZUM
 The subject provides a basic introduction to the study of artificial intelligence with an emphasis on symbolic techniques. Classic areas such as state space search, heuristic search, agent systems, game decision-making, automatic planning, robotics, and task modeling will be covered.
